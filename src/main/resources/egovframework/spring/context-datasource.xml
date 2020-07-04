@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+	<beans profile="local">
+		<!-- FactoryOn Database -->
+	    <bean id="dataSourceSpied" class="org.apache.commons.dbcp.BasicDataSource">
+	        <property name="driverClassName" value="${db.driverClassName}"/>
+	        <property name="url" value="${db.url}"/>
+	        <property name="username" value="${db.userName}"/>
+	        <property name="password" value="${db.password}"/>
+	        <property name="maxActive" value="100"/>
+	        <property name="maxIdle" value="10"/>
+	    </bean>
+
+	    <bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+	        <constructor-arg ref="dataSourceSpied"/>
+	        <property name="logFormatter">
+	            <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+	                <property name="loggingType" value="MULTI_LINE"/>
+	                <property name="sqlPrefix" value="SQL : "/>
+	            </bean>
+	        </property>
+	    </bean>
+    </beans>
+</beans>
