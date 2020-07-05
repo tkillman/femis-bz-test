@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
-	<beans profile="local">
+
 		<!-- FactoryOn Database -->
 	    <bean id="dataSourceSpied" class="org.apache.commons.dbcp.BasicDataSource">
-	        <property name="driverClassName" value="${db.driverClassName}"/>
-	        <property name="url" value="${db.url}"/>
-	        <property name="username" value="${db.userName}"/>
-	        <property name="password" value="${db.password}"/>
+	        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+	        <property name="url" value="jdbc:oracle:thin:@localhost:1521:ORCL"/>
+	        <property name="username" value="C##KIM"/>
+	        <property name="password" value="1234"/>
 	        <property name="maxActive" value="100"/>
 	        <property name="maxIdle" value="10"/>
 	    </bean>
-
+  
 	    <bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
 	        <constructor-arg ref="dataSourceSpied"/>
 	        <property name="logFormatter">
@@ -21,5 +21,5 @@
 	            </bean>
 	        </property>
 	    </bean>
-    </beans>
+	    
 </beans>

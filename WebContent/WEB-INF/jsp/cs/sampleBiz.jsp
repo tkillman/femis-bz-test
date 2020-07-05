@@ -2,12 +2,10 @@
 <%@ page contentType="text/html; charset=utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="xss" uri="http://localhost:8181/tld/xss" %>
+<%@ page import="kr.or.kicox.biz.fr.util.SessionUtils" %>
 
 <html lang="ko">
-<head>
-	<script src='http://code.jquery.com/jquery-2.2.3.min.js'></script>
-	<script src="./js/common.js"></script>
-</head>
+<head></head>
 	
 <body>
 
@@ -64,11 +62,22 @@
 	</div>
 </div>
 <script type="text/javascript">
+	//전역변수
+	var samplBizListGrid;
 
-	$('[name=btnWriteBbs]').click(function(){
-		popupDetail({'mode' : 'INSERT_R'});
-	})
-	
+	$(function(){
+		onLoad();
+	});
+
+	function onLoad(){
+		// Button Event Bind
+		btnEventBind();
+		//그리드 초기화
+		createGrid();
+		//그리드 초기화
+		onSearch();
+	};
+
 	//팝업
 	function popupDetail(rowData, viewYn){
 		const src = viewYn ? '/cs/samplBizViewPopup' : '/cs/samplBizDetailPopup';
@@ -78,6 +87,55 @@
 	function onSearch(){
 		var searchCondition = gfnFormToObject('.schrCond'); //입력값
 		console.log('searchCondition', searchCondition);
+		
+		$T('/cs/samplBiz/list.json')
+		.inData('searchCondition', searchCondition)
+		.outDataSet('samplBizListGrid', samplBizListGrid)
+		.paging('searchCondition', samplBizListGrid)
+		.post();
+	}
+	
+	function btnEventBind(){
+		// 검색 버튼 이벤트
+		$('[name=btnSearch]').click(function(){
+			onSearch();
+		});
+
+		// 글작성 버튼 이벤트
+		$('[name=btnWriteBbs]').click(function(){
+			popupDetail({'mode':'INSERT_R'});
+		});
+	}
+	
+	function createGrid(){
+		samplBizListGrid = $G('#samplBizListGrid')
+			.autowidth(true)
+			.height('auto')
+			.rowNum(5)
+			.caption(["실무사례 목록"])
+			.paging('#samplBizListGridPager')
+			.colNames(['PK','아이디', '패스워드','이름','주소'])
+			.cols([
+				{name:'unique_number',sorttype:"int",	align:'center'},
+				{name:'id1',sorttype:"string",	align:'center'},
+				{name:'passwd',sorttype:"string",	align:'center'},
+				{name:'name',sorttype:"string",		align:'center'},
+				{name:'addr',sorttype:"string",		align:'center'}
+			])
+			.iamhungry()
+			.build();
+	
+		// grid css 조정
+		$('.ui-jqgrid-htable').css({width:'100%'});
+		$('#samplBizListGrid').css({width:'100%'});
+		
+		samplBizListGrid.onDblClickRow(function(rowId, status, e){
+			let rowData = samplBizListGrid.getRowData(rowId);
+			rowData.mode = 'UPDATE';
+			popupDetail(rowData);
+		});
+		
+		console.log(samplBizListGrid);
 	}
 </script>
 </body>

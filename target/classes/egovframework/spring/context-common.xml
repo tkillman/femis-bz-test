@@ -18,33 +18,6 @@
         <property name="cacheSeconds" value="60"/>
     </bean>
 
-    <!--
-    <bean id="leaveaTrace" class="egovframework.rte.fdl.cmmn.trace.LeaveaTrace">
-        <property name="traceHandlerServices">
-            <list>
-                <ref bean="traceHandlerService"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="traceHandlerService" class="egovframework.rte.fdl.cmmn.trace.manager.DefaultTraceHandleManager">
-        <property name="reqExpMatcher" ref="antPathMater"/>
-        <property name="patterns">
-            <list>
-                <value>*</value>
-            </list>
-        </property>
-        <property name="handlers">
-            <list>
-                <ref bean="defaultTraceHandler"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="antPathMater" class="org.springframework.util.AntPathMatcher"/>
-    <bean id="defaultTraceHandler" class="egovframework.rte.fdl.cmmn.trace.handler.DefaultTraceHandler"/>
-    -->
-
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <property name="maxUploadSize" value="600000000"/>

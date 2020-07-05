@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.kicox.biz.cs.mapper.SamplBizMapper">
+	<insert id="insertSamplBiz" parameterType="kr.or.kicox.biz.cs.model.JobBbsVo">
+		INSERT /*kr.or.kicox.biz.cs.mapper.samplbizmapper.insertSamplBiz*/ INTO C##KIM.TBL_TEST (
+								   PASSWD, NAME, ID1, ADDR, UNIQUE_NUMBER) 
+										VALUES ( #{passwd},
+												 #{name},
+												 #{id1},
+												 #{addr},
+												 (SELECT COUNT(1) + 1
+   												FROM C##KIM.TBL_TEST))
+	</insert>
+	
+	<select id="selectSamplBizListCount" resultType="int" parameterType="kr.or.kicox.biz.cs.model.CSSearchVo"> 
+		SELECT COUNT(1)
+		FROM C##KIM.TBL_TEST
+	</select>
+	
+	<select id="selectSamplBizList" resultType="hashmap" parameterType="kr.or.kicox.biz.cs.model.CSSearchVo"> 
+		SELECT id1,
+				passwd,
+				name,
+				addr,
+				unique_number
+		FROM C##KIM.TBL_TEST
+		ORDER BY unique_number DESC
+		OFFSET (#{pageNo} -1) * #{pageSize} ROWS FETCH FIRST #{pageSize} ROWS ONLY
+	</select>
+	
+	<update id="updateSamplBiz" parameterType="kr.or.kicox.biz.cs.model.JobBbsVo">
+		UPDATE C##KIM.TBL_TEST SET ID1 = #{id1}, ADDR = #{addr}
+		WHERE unique_number = #{unique_number}
+	</update>
+	
+	<delete id="deleteSamplBiz" parameterType="kr.or.kicox.biz.cs.model.JobBbsVo">
+		DELETE FROM C##KIM.TBL_TEST
+		WHERE unique_number = #{unique_number}
+	</delete>
+</mapper>

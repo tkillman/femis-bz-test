@@ -17,6 +17,7 @@
 				<h6 class="txt-type02">게시물 정보</h6>
 				<input type="hidden" title="업무게시판관리번호" class="input-form" name="job_bbs_manage_no"/>
 				<input type="hidden" title="상위업무게시판관리번호" class="input-form" name="upper_job_bbs_manage_no"/>
+				<input title="유니크번호" class="input-form" name="unique_number"/>
 				<div class="tbl-frm mgt-10">
 					<table>
 						<caption>게시물 정보</caption>
@@ -26,27 +27,16 @@
 						</colgroup>
 						<tbody>
 							<tr>
-								<th scope="row">제목 <strong>*</strong></th>
-								<td colspan="3"><input type="text" title="제목" class="type-w100 input-form" name="bbs_sj_nm" required="required"/></td>
+								<th scope="row">아이디<strong>*</strong></th>
+								<td colspan="3"><input type="text" title="아이디" class="type-w100 input-form" name="id1" required="required"/></td>
 							</tr>
 							<tr id="orgTxaRow" style="display:none;">
 								<th scope="row">원문보기</th>
 								<td colspan="3" id="orgTxa"></td>
 							</tr>
 							<tr>
-								<th scope="row">내용 <strong>*</strong></th>
-								<td colspan="3" id="txt-area"><textarea class="type-h03 input-form" title="내용" name="bbs_cn" id="bbs_cn" required="required" style="width:402px; !important;"></textarea></td>
-							</tr>
-							<tr>
-								<th scope="row">첨부</th>
-								<td colspan="3">
-									<div class="btn-group mgt-5">
-										<a href="javascript:;" class="btn-type-black" name="btnFileUp">파일찾기</a>
-									</div>
-									<div class="mgt-5 in-grid" data-atchmnfl-se-code="3" data-atchmnfl-ty-code="12" data-atchmnfl-manage-no>
-										<table id="fileGrid"></table>
-									</div>
-								</td>
+								<th scope="row">주소<strong>*</strong></th>
+								<td colspan="3" id="txt-area"><textarea class="type-h03 input-form" title="주소" name="addr" id="addr" required="required" style="width:402px; !important;"></textarea></td>
 							</tr>
 						</tbody>
 					</table>
@@ -91,12 +81,42 @@
 </div>
 
 <script type="text/javascript">
-	$('[name=btnSave]').click(function(){
-		onSave();
-	})
-	
+var oEditors = [];
+var fileGrid;
+var mode ="UPDATE";
+var orgData;
+
+	function onLoad(data){
+		mode = data.mode;
+		
+		// button event bind
+		console.log('SampleBizDetail onLoad', data);
+		// 화면 오브젝트 세팅
+		setForm(data);
+		
+		btnEventBind();
+	}
+	function btnEventBind(){
+		
+		//저장 버튼
+		$('[name=btnSave]').click(function(){
+			onSave();
+		});
+		
+		// 취소 버튼 이벤트
+		$('[name=btnCancle]').click(function(){
+			onClosing();
+		});
+		
+		// 삭제 버튼 이벤트
+		$('[name=btnDelete]').click(function(){
+			onDelete();
+		});
+	}
+
 	function onSave(){
 		var detailForm = gfnFormToObject('.input-form');
+		detailForm.mode = mode;
 		
 		if (!validation()) return false;
 		
@@ -112,5 +132,24 @@
 		if(!gfnCheckValidation('[name=bbs_sj_nm]')) return false;
 		
 		return true;
+	}
+	
+	function setForm(d){
+		// 넘어온 데이타 존재 하면 셋팅
+		if(!$.isEmptyObject(d))
+			gfnObjectToForm(d, '.input-form');
+	}
+	
+	function onDelete(){
+		var deleteData = gfnFormToObject('.input-form');
+		
+		if( confirm('삭제하시겠습니까?') ){
+			$T('/cs/samplBiz/delete.json')
+			.inData('param', deleteData )
+			.onLoad(function(d){
+				onClosing();
+			})
+			.post();
+		}
 	}
 </script>
